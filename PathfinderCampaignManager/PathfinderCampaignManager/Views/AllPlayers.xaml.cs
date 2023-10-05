@@ -27,7 +27,7 @@ public partial class AllPlayersPage : ContentPage
             var player = (Models.Player)e.CurrentSelection[0];
 
             // Should navigate to "NotePage?ItemId=path\on\device\XYZ.notes.txt"
-            await Shell.Current.GoToAsync($"{nameof(PlayerPage)}?{nameof(PlayerPage.ItemId)}={player.Filename}");
+            await Shell.Current.GoToAsync($"{nameof(PlayerPage)}?{nameof(PlayerPage.ItemId)}={player.Name}");
 
             // Unselect the UI
             notesCollection.SelectedItem = null;

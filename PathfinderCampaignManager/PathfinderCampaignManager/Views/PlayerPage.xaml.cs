@@ -1,4 +1,5 @@
 using PathfinderCampaignManager.Helpers;
+using PathfinderCampaignManager.Models;
 
 namespace PathfinderCampaignManager.Views;
 
@@ -19,7 +20,8 @@ public partial class PlayerPage : ContentPage
     private async void SaveButton_Clicked(object sender, EventArgs e)
     {
         if (BindingContext is Models.Player player)
-            FileHelper.WriteToJsonFile(Path.Combine(FileSystem.AppDataDirectory, $"{player.Name}.players.txt"), player);
+            player.Save();  
+        //FileHelper.WriteToJsonFile(Path.Combine(FileSystem.AppDataDirectory, $"{player.Name}.players.txt"), player);
 
         await Shell.Current.GoToAsync("..");
     }
@@ -29,26 +31,18 @@ public partial class PlayerPage : ContentPage
         if (BindingContext is Models.Player player)
         {
             // Delete the file.
-            if (File.Exists(player.Filename))
-                File.Delete(player.Filename);
+            player.Delete();
         }
 
         await Shell.Current.GoToAsync("..");
     }
 
-    private void LoadPlayer(string fileName = "")
+    private async void LoadPlayer(string playerName = "")
     {
-        Models.Player PlayerModel = new Models.Player();
-        PlayerModel.Filename = fileName;
+        var PlayerModel = await Player.LoadPlayer(playerName);
 
-        if (File.Exists(fileName))
-        {
-            PlayerModel.Date = File.GetCreationTime(fileName);
-            var player = FileHelper.ReadFromJsonFile<Models.Player>(fileName);
-            PlayerModel.Name = player.Name;
-            PlayerModel.CharacterName = player.CharacterName;
-            PlayerModel.PathbuilderLink = player.PathbuilderLink;
-        }
+        if (PlayerModel is null)
+            PlayerModel = new Player();
 
         BindingContext = PlayerModel;
     }
