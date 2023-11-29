@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using PathfinderCampaignManager.Data;
 
-namespace PathfinderCampaignManager.Models;
+namespace PathfinderCampaignManager.Models.Data;
 
 internal class AllPlayers
 {

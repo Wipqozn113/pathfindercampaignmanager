@@ -1,10 +1,10 @@
 ﻿using SQLite;
-using PathfinderCampaignManager.Models;
 using PathfinderCampaignManager.Config;
+using PathfinderCampaignManager.Models.Data;
 
 namespace PathfinderCampaignManager.Data;
 
-public class DBManager<T> where T : new()
+public class DBManager<T>  where T : DatabaseModel, new()
 {
     protected SQLiteAsyncConnection Database;
     public DBManager()
@@ -19,6 +19,12 @@ public class DBManager<T> where T : new()
         var result = await Database.CreateTableAsync<T>();
     }
 
+    public async Task<T> GetItemAsync(int id)
+    {
+        await Init();
+        return await Database.Table<T>().Where(i => i.ID == id).FirstOrDefaultAsync();
+    }
+
     public async Task<List<T>> GetItemsAsync()
     {
         await Init();
@@ -29,5 +35,18 @@ public class DBManager<T> where T : new()
     {
         await Init();
         return await Database.DeleteAsync(item);
+    }
+
+    public async Task<int> SaveItemAsync(T item)
+    {
+        await Init();
+        if (item.ID != 0)
+        {
+            return await Database.UpdateAsync(item);
+        }
+        else
+        {
+            return await Database.InsertAsync(item);
+        }
     }
 }
